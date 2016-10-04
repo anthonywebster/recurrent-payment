@@ -21,5 +21,6 @@ Route::group(['prefix' => 'paypal'], function () {
     Route::get('/payment-success', 'PaymentController@pagoSatifactorio');
     Route::get('/payment-cancel', 'PaymentController@pagoCancelado');
     Route::get('/subscription-cancel', 'PaymentController@cancelar');
+    Route::get('/actualizar-plan/{id}', 'PaymentController@actualizarPlan');
     Route::post('/ipn/listener', 'PaypalHookController@ipn');
 });

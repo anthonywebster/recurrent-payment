@@ -89,7 +89,7 @@ class PagosRecurrentes
         }
 
         $this->planCreado = $this->actualizarPlan($planCreado);
-
+//        dd($this->planCreado->getId());
         return $this;
     }
 
@@ -194,5 +194,41 @@ class PagosRecurrentes
     public function getPlanCreado()
     {
         return $this->planCreado;
+    }
+
+    public function actualizar($id, $type = 'regular')
+    {
+        try {
+            $patchRequest = new PatchRequest();
+            $patch = new Patch();
+
+            $plan = Plan::get($id, $this->apiContext);
+
+            $definicionDePago =  $type == 'regular' ? $plan->getPaymentDefinitions()[0] : $plan->getPaymentDefinitions()[1] ;
+
+            $idDefinicionDePago = $definicionDePago->getId();
+
+            $patch->setOp('replace')
+                ->setPath('/payment-definitions/' . $idDefinicionDePago)
+                ->setValue(json_decode(
+                    '{
+                        "name": "Updated Payment Definition",
+                        "frequency": "Day",
+                        "amount": {
+                            "currency": "USD",
+                            "value": "100"
+                        }
+                    }'
+                ));
+
+            $patchRequest->addPatch($patch);
+
+            $plan->update($patchRequest,$this->apiContext);
+
+            dd(Plan::get($plan->getId(),$this->apiContext));
+        } catch (Exception $ex) {
+            dd($ex->getMessage(), $ex->getData());
+        }
+
     }
 }

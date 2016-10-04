@@ -44,4 +44,11 @@ class PaymentController extends BaseController
 
         $this->pagosRecurrentes->cancelar();
     }
+
+    public function actualizarPlan($planId)
+    {
+        $planId = $planId;
+
+        $this->pagosRecurrentes->actualizar($planId);
+    }
 }
